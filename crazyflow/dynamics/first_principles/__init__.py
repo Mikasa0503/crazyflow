@@ -122,11 +122,6 @@ The gyroscopic and reaction torques convert \(\boldsymbol{\Omega}\) and
 | \(\mathbf{C}_\mathrm{a}\) | `drag_matrix` | Drag coefficients in matrix form in N/(m/s) |
 """
 
-from crazyflow.dynamics.first_principles.dynamics import (
-    Params,
-    dynamics,
-    sim_dynamics,
-    symbolic_dynamics,
-)
+from crazyflow.dynamics.first_principles.dynamics import Params, dynamics, symbolic_dynamics
 
-__all__ = ["dynamics", "symbolic_dynamics", "sim_dynamics", "Params"]
+__all__ = ["dynamics", "symbolic_dynamics", "Params"]

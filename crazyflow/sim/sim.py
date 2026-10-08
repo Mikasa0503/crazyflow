@@ -29,12 +29,14 @@ from crazyflow.control.transform import motor_force2rotor_vel
 from crazyflow.drones import Drone
 from crazyflow.dynamics import Dynamics
 from crazyflow.dynamics import load_params as load_dynamics_params
-from crazyflow.dynamics.first_principles import sim_dynamics as first_principles_dynamics
-from crazyflow.dynamics.so_rpy import sim_dynamics as so_rpy_dynamics
-from crazyflow.dynamics.so_rpy_rotor import sim_dynamics as so_rpy_rotor_dynamics
-from crazyflow.dynamics.so_rpy_rotor_drag import sim_dynamics as so_rpy_rotor_drag_dynamics
 from crazyflow.exception import ConfigError, NotInitializedError
 from crazyflow.sim.data import SimControls, SimCore, SimData, SimParams, SimState, SimStateDeriv
+from crazyflow.sim.dynamics import (
+    first_principles_dynamics,
+    so_rpy_dynamics,
+    so_rpy_rotor_drag_dynamics,
+    so_rpy_rotor_dynamics,
+)
 from crazyflow.sim.integration import Integrator, euler, rk4, symplectic_euler
 from crazyflow.sim.pipeline import append_fn
 from crazyflow.sim.sharding import WORLD_AXIS, build_sharded_data, build_sharded_mjx_data, placement
@@ -525,7 +527,6 @@ class Sim:
         N, D = self.n_worlds, self.n_drones
         data = SimData(
             states=SimState.create(N, D, device),
-            states_deriv=SimStateDeriv.create(N, D, device),
             controls=SimControls.create(
                 N,
                 D,
@@ -648,7 +649,7 @@ def build_control_fns(
     return stages
 
 
-def select_dynamics_fn(dynamics: Dynamics) -> Callable[[SimData], SimData]:
+def select_dynamics_fn(dynamics: Dynamics) -> Callable[[SimData], SimStateDeriv]:
     """Select the dynamics function for the given dynamics mode."""
     match dynamics:
         case Dynamics.first_principles:
@@ -664,7 +665,7 @@ def select_dynamics_fn(dynamics: Dynamics) -> Callable[[SimData], SimData]:
 
 
 def select_integrate_fn(
-    integrator: Integrator, dynamics_fn: Callable[[SimData], SimData]
+    integrator: Integrator, dynamics_fn: Callable[[SimData], SimStateDeriv]
 ) -> Callable[[SimData], SimData]:
     """Select the integration function for the given dynamics and integrator mode."""
     match integrator:

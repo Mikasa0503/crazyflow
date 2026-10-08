@@ -57,9 +57,8 @@ where \(\mathbf{f}_\mathrm{g} = m\mathbf{g}\).
 from crazyflow.dynamics.so_rpy.dynamics import (
     Params,
     dynamics,
-    sim_dynamics,
     symbolic_dynamics,
     symbolic_dynamics_euler,
 )
 
-__all__ = ["Params", "dynamics", "sim_dynamics", "symbolic_dynamics", "symbolic_dynamics_euler"]
+__all__ = ["Params", "dynamics", "symbolic_dynamics", "symbolic_dynamics_euler"]
